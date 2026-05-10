@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth"; 
 
+
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Query required" }, { status: 400 });
     }
 
-    const [medicines] = await prisma.$transaction([
+    const queries: any[] = [
       prisma.$queryRaw`
         SELECT * FROM "Medicine"
         WHERE "name" ILIKE ${`%${query}%`} 
@@ -45,21 +46,30 @@ export async function GET(req: NextRequest) {
             ELSE 3 
           END
         LIMIT 10
-      `,
-      ...(apiKey ? [
+      `
+    ];
+
+    if (apiKey && userId) {
+      queries.push(
         prisma.user.update({
           where: { id: userId },
           data: { credits: { decrement: 1 } },
-        }),
+        })
+      );
+      
+      queries.push(
         prisma.apiLog.create({
           data: {
             userId: userId,
             endpoint: "/api/medicines/search",
             status: 200,
           },
-        }),
-      ] : [])
-    ]);
+        })
+      );
+    }
+
+    const results = await prisma.$transaction(queries);
+    const medicines = results[0];
 
     return NextResponse.json({
       success: true,
