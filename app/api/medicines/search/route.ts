@@ -1,30 +1,47 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const query = searchParams.get('q');
+  const query = searchParams.get("q");
+  const apiKey = req.headers.get("x-api-key"); 
 
-  if (!query) {
-    return NextResponse.json({ error: 'Search query is required' }, { status: 400 });
+  if (!apiKey) {
+    return NextResponse.json({ error: "API Key is required" }, { status: 401 });
   }
 
-  try {
-    const results = await prisma.medicine.findMany({
-      where: {
-        OR: [
-          { name: { contains: query, mode: 'insensitive' } },
-          { generic: { contains: query, mode: 'insensitive' } },
-          { company: { contains: query, mode: 'insensitive' } },
-        ],
-      },
-      take: 20, 
-    });
+  const user = await prisma.user.findUnique({
+    where: { apiKey: apiKey },
+  });
 
-    return NextResponse.json(results);
-  } catch (error) {
-    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+  if (!user) {
+    return NextResponse.json({ error: "Invalid API Key" }, { status: 403 });
   }
+
+  if (user.credits < 1) {
+    return NextResponse.json({ error: "Insufficient credits. Please buy more." }, { status: 402 });
+  }
+
+
+  const medicines = await prisma.medicine.findMany({
+    where: {
+      OR: [
+        { name: { contains: query || "", mode: "insensitive" } },
+        { generic: { contains: query || "", mode: "insensitive" } },
+      ],
+    },
+    take: 10,
+  });
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { credits: { decrement: 1 } },
+  });
+
+  return NextResponse.json({
+    remaining_credits: user.credits - 1,
+    data: medicines
+  });
 }
