@@ -1,6 +1,8 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
-import { Copy, Key, CreditCard, LogOut, Zap } from "lucide-react";
+import { Copy, Key, CreditCard, LogOut, Zap, EyeOff, Eye } from "lucide-react";
+import UsageChart from "../components/UsageChart";
+import { useState } from "react";
 
 interface Props {
   apiKey: string;
@@ -9,7 +11,7 @@ interface Props {
 
 export default function DashboardUI({ apiKey, credits }: Props) {
   const { data: session } = useSession();
-
+  const [showKey, setShowKey] = useState(false);
 
   const handlePayment = async (amount: number, creditToBuy: number) => {
     try {
@@ -59,23 +61,29 @@ export default function DashboardUI({ apiKey, credits }: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* Credits Card */}
-          <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-3xl backdrop-blur-xl flex flex-col justify-between">
+          <div className="relative overflow-hidden bg-zinc-900/50 border border-zinc-800 p-6 rounded-3xl backdrop-blur-xl flex flex-col justify-between group">
+            {/* Background Glow */}
+            <div className="absolute -right-10 -top-10 w-32 h-32 bg-blue-600/10 blur-[50px] group-hover:bg-blue-600/20 transition-all" />
+
             <div>
-              <div className="flex items-center gap-3 mb-4 text-emerald-400">
-                <CreditCard className="w-5 h-5" />
-                <span className="font-medium text-sm">Available Credits</span>
+              <div className="flex items-center gap-3 mb-4 text-blue-400">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+                <span className="font-medium text-sm text-zinc-400">
+                  Available Credits
+                </span>
               </div>
-              <div className="text-5xl font-bold">{credits}</div>
-              <p className="text-zinc-500 text-xs mt-2 uppercase tracking-wider">
-                Requests Remaining
-              </p>
+              <div className="text-6xl font-extrabold tracking-tighter text-white">
+                {credits}
+              </div>
             </div>
 
             <button
-              onClick={() => handlePayment(100, 500)} 
-              className="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95"
+              onClick={() => handlePayment(100, 500)}
+              className="w-full mt-8 bg-white text-black hover:bg-zinc-200 py-3 rounded-2xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              Buy 500 Credits (100 BDT)
+              <Zap className="w-4 h-4 fill-current" /> Buy Credits
             </button>
           </div>
 
@@ -85,19 +93,31 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               <Key className="w-5 h-5" />
               <span className="font-medium text-sm">Your Secret API Key</span>
             </div>
-            <div className="flex items-center gap-4 bg-black border border-zinc-800 p-4 rounded-2xl group">
+            <div className="flex items-center gap-4 bg-zinc-950 border border-zinc-800 p-4 rounded-2xl group">
               <code className="text-zinc-300 font-mono text-sm flex-1 truncate">
-                {apiKey}
+                {showKey ? apiKey : "•".repeat(20)}
               </code>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(apiKey);
-                  alert("API Key copied to clipboard!");
-                }}
-                className="p-2 bg-zinc-900 hover:bg-zinc-800 rounded-lg transition-all text-zinc-500 hover:text-white border border-zinc-800"
-              >
-                <Copy className="w-4 h-4" />
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowKey(!showKey)}
+                  className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors"
+                >
+                  {showKey ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(apiKey);
+                    alert("Copied!");
+                  }}
+                  className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
             </div>
             <div className="mt-6 space-y-2">
               <p className="text-zinc-400 text-sm italic">
@@ -113,6 +133,10 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className=" mb-8">
+          <UsageChart />
         </div>
 
         {/* Quick Start Guide */}

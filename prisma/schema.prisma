@@ -22,6 +22,9 @@ model Medicine {
   pregnancy_category String?
   precautions       String? @db.Text
   storage_conditions String?
+
+  @@index([name])
+  @@index([generic])
 }
 
 
@@ -35,6 +38,7 @@ model User {
   credits       Int       @default(10) 
   accounts      Account[]
   sessions      Session[]
+  logs          ApiLog[]
   createdAt     DateTime  @default(now())
 }
 
@@ -75,4 +79,16 @@ model Transaction {
   status    String   @default("PENDING") 
   tranId    String   @unique
   createdAt DateTime @default(now())
+}
+
+
+model ApiLog {
+  id        Int      @id @default(autoincrement())
+  userId    String   
+  user      User     @relation(fields: [userId], references: [id])
+  endpoint  String   
+  status    Int      
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt]) 
 }

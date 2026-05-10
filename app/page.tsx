@@ -1,3 +1,4 @@
+import { Database, ShieldCheck, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -105,6 +106,46 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ১. Features Section - Stats এর নিচে বসান */}
+<section id="features" className="max-w-7xl mx-auto px-8 py-32">
+  <div className="text-center mb-16">
+    <h2 className="text-3xl md:text-5xl font-bold mb-4">Built for scale.</h2>
+    <p className="text-zinc-500">Everything you need to build next-gen healthcare apps.</p>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-blue-500/50 transition-all group">
+      <div className="w-12 h-12 bg-blue-600/10 rounded-xl flex items-center justify-center mb-6 text-blue-400 group-hover:scale-110 transition-transform">
+        <Zap className="w-6 h-6" />
+      </div>
+      <h3 className="text-xl font-bold mb-3">Lightning Fast</h3>
+      <p className="text-zinc-400 text-sm leading-relaxed">
+        Our edge-cached API ensures responses under 100ms globally, keeping your app snappy.
+      </p>
+    </div>
+
+    <div className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-emerald-500/50 transition-all group">
+      <div className="w-12 h-12 bg-emerald-600/10 rounded-xl flex items-center justify-center mb-6 text-emerald-400 group-hover:scale-110 transition-transform">
+        <Database className="w-6 h-6" />
+      </div>
+      <h3 className="text-xl font-bold mb-3">Verified Data</h3>
+      <p className="text-zinc-400 text-sm leading-relaxed">
+        Directly scraped and verified from official pharmaceutical records in Bangladesh.
+      </p>
+    </div>
+
+    <div className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-purple-500/50 transition-all group">
+      <div className="w-12 h-12 bg-purple-600/10 rounded-xl flex items-center justify-center mb-6 text-purple-400 group-hover:scale-110 transition-transform">
+        <ShieldCheck className="w-6 h-6" />
+      </div>
+      <h3 className="text-xl font-bold mb-3">Secure Access</h3>
+      <p className="text-zinc-400 text-sm leading-relaxed">
+        Robust API key management and encrypted endpoints for your production needs.
+      </p>
+    </div>
+  </div>
+</section>
     </div>
   );
 }
