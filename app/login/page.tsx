@@ -21,18 +21,6 @@ export default function LoginPage() {
           <p className="text-zinc-400 mt-2 text-sm">Login to manage your API keys</p>
         </div>
 
-        <button
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-          className="w-full bg-white text-black font-semibold py-3 rounded-xl mb-6 flex items-center justify-center gap-3 hover:bg-zinc-200 transition-all"
-        >
-          <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="google" />
-          Continue with Google
-        </button>
-
-        <div className="relative mb-6">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-800"></div></div>
-          <div className="relative flex justify-center text-xs uppercase"><span className="bg-[#0b0b0b] px-2 text-zinc-500">Or continue with</span></div>
-        </div>
 
         <form onSubmit={handleCredentialsLogin} className="space-y-4">
           <div className="relative">

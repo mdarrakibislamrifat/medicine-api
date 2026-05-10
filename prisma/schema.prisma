@@ -64,3 +64,15 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+
+
+model Transaction {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Float
+  credits   Int
+  status    String   @default("PENDING") 
+  tranId    String   @unique
+  createdAt DateTime @default(now())
+}
