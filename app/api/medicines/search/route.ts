@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; // আপনার authOptions পাথ অনুযায়ী
+import { authOptions } from "@/lib/auth"; 
 
 const prisma = new PrismaClient();
 
@@ -10,14 +10,12 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q")?.trim();
     
-    // ১. চেক করুন এটি এপিআই কী দিয়ে আসছে নাকি সেশন দিয়ে
     const apiKey = req.headers.get("x-api-key");
     const session = await getServerSession(authOptions);
 
     let userId: string | null = null;
 
     if (apiKey) {
-      // এপিআই কী দিয়ে অ্যাক্সেস
       const user = await prisma.user.findUnique({
         where: { apiKey: apiKey },
         select: { id: true, credits: true },
@@ -26,10 +24,8 @@ export async function GET(req: NextRequest) {
       if (user.credits < 1) return NextResponse.json({ error: "Insufficient credits" }, { status: 402 });
       userId = user.id;
     } else if (session?.user?.id) {
-      // সেশন (আপনার ওয়েবসাইট) দিয়ে অ্যাক্সেস - এখানে ক্রেডিট কাটবে না বা আলাদা লজিক দিতে পারেন
       userId = session.user.id;
     } else {
-      // কোনোটিই না থাকলে এরর
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
 
@@ -37,7 +33,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Query required" }, { status: 400 });
     }
 
-    // ২. ডাটাবেস অপারেশন (শুধুমাত্র এপিআই কী থাকলে ক্রেডিট কাটবে)
     const [medicines] = await prisma.$transaction([
       prisma.$queryRaw`
         SELECT * FROM "Medicine"
@@ -51,7 +46,6 @@ export async function GET(req: NextRequest) {
           END
         LIMIT 10
       `,
-      // সেশন থাকলে ক্রেডিট কমানো ঐচ্ছিক, এপিআই কী থাকলে অবশ্যই কমবে
       ...(apiKey ? [
         prisma.user.update({
           where: { id: userId },
