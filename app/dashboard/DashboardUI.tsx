@@ -1,8 +1,18 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
-import { Copy, Key, CreditCard, LogOut, Zap, EyeOff, Eye } from "lucide-react";
+import {
+  Copy,
+  Key,
+  CreditCard,
+  LogOut,
+  Zap,
+  EyeOff,
+  Eye,
+  Home,
+} from "lucide-react";
 import UsageChart from "../components/UsageChart";
 import { useState } from "react";
+import Link from "next/link";
 
 interface Props {
   apiKey: string;
@@ -51,12 +61,22 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               Manage your medicine API access and credits
             </p>
           </div>
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 px-4 py-2 rounded-xl border border-zinc-800 transition-all text-sm font-medium"
-          >
-            <LogOut className="w-4 h-4" /> Logout
-          </button>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-zinc-400 hover:text-white px-4 py-2 rounded-xl border border-transparent hover:border-zinc-800 transition-all text-sm font-medium"
+            >
+              <Home className="w-4 h-4" /> Home Page
+            </Link>
+
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 px-4 py-2 rounded-xl border border-zinc-800 transition-all text-sm font-medium"
+            >
+              <LogOut className="w-4 h-4" /> Logout
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -78,24 +98,26 @@ export default function DashboardUI({ apiKey, credits }: Props) {
                 {credits}
               </div>
 
-            <p className="text-sm text-zinc-500 mt-2 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-              Resets to 10 at midnight (UTC)
-            </p>
+              <p className="text-sm text-zinc-500 mt-2 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                Resets to 10 at midnight (UTC)
+              </p>
             </div>
 
-              <button
-                onClick={() => handlePayment(100, 500)}
-                className={`w-full mt-8 py-3 rounded-2xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 
+            <button
+              onClick={() => handlePayment(100, 500)}
+              className={`w-full mt-8 py-3 rounded-2xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 
                 ${
                   credits === 0
-                    ? 'bg-blue-600 hover:bg-blue-500 text-white animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]'
-                    : 'bg-white text-black hover:bg-zinc-200'
+                    ? "bg-blue-600 hover:bg-blue-500 text-white animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+                    : "bg-white text-black hover:bg-zinc-200"
                 }`}
-              >
-                <Zap className={`w-4 h-4 ${credits === 0 ? 'fill-white' : 'fill-current'}`} />
-                {credits === 0 ? "Get More Credits" : "Buy Credits"}
-              </button>
+            >
+              <Zap
+                className={`w-4 h-4 ${credits === 0 ? "fill-white" : "fill-current"}`}
+              />
+              {credits === 0 ? "Get More Credits" : "Buy Credits"}
+            </button>
           </div>
 
           {/* API Key Card */}
@@ -164,7 +186,8 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               "https://medicine-api-nine.vercel.app/api/medicines/search?q=Napa"
             </div>
             <p className="text-sm text-zinc-400 mt-2">
-              * Free tier users get 10 requests daily. Paid credits never expire.
+              * Free tier users get 10 requests daily. Paid credits never
+              expire.
             </p>
           </div>
         </div>
