@@ -79,7 +79,10 @@ export default async function Home() {
         </div>
 
         {/* API Preview / Code Mockup */}
-        <div className="mt-24 w-full max-w-4xl rounded-3xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden shadow-2xl">
+        <div
+          id="docs"
+          className="mt-24 w-full max-w-4xl rounded-3xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden shadow-2xl"
+        >
           <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900/80 border-b border-zinc-800">
             <div className="flex gap-1.5">
               <div className="w-3 h-3 rounded-full bg-zinc-700" />
@@ -174,6 +177,169 @@ export default async function Home() {
               Robust API key management and encrypted endpoints for your
               production needs.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="max-w-7xl mx-auto px-8 py-32 relative">
+        {/* Background Decoration */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="text-center mb-16 relative z-10">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            Pricing for Local Innovators
+          </h2>
+          <p className="text-zinc-500">
+            Start for free and scale with premium pharmaceutical data.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto relative z-10">
+          {/* Free Plan */}
+          <div className="p-8 rounded-[2.5rem] bg-zinc-900/40 border border-zinc-800 backdrop-blur-sm flex flex-col">
+            <div className="mb-8">
+              <h3 className="text-lg font-bold text-white mb-2">Developer</h3>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold text-white">৳০</span>
+                <span className="text-zinc-500 text-sm">/মাস</span>
+              </div>
+            </div>
+
+            <ul className="space-y-4 mb-10 flex-1">
+              {[
+                "১০টি ফ্রি ক্রেডিট / প্রতিদিন",
+                "২৫ হাজার+ ওষুধের ডেটাবেজ",
+                "কমিউনিটি সাপোর্ট",
+                "বেসিক ড্রাগ ইনফরমেশন",
+              ].map((feature, i) => (
+                <li
+                  key={i}
+                  className="flex items-center gap-3 text-sm text-zinc-400"
+                >
+                  <div className="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              href={session ? "/dashboard" : "/login"}
+              className="w-full py-4 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold transition-all text-center"
+            >
+              ফ্রি শুরু করুন
+            </Link>
+          </div>
+
+          {/* Startup Plan - Most Popular */}
+          <div className="p-8 rounded-[2.5rem] bg-gradient-to-b from-blue-600/15 to-transparent border border-blue-500/30 backdrop-blur-sm flex flex-col relative scale-105 shadow-2xl shadow-blue-500/10">
+            <div className="absolute top-6 right-6 px-3 py-1 bg-blue-600 rounded-full text-[10px] font-bold tracking-widest uppercase">
+              Best Value
+            </div>
+
+            <div className="mb-8">
+              <h3 className="text-lg font-bold text-white mb-2">Startup Pro</h3>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold text-white">৳৯৯৯</span>
+                <span className="text-zinc-500 text-sm">/মাস</span>
+              </div>
+              <p className="text-blue-400/80 mt-2 text-xs font-medium">
+                ছোট ফার্মাসি বা হেলথ-অ্যাপের জন্য
+              </p>
+            </div>
+
+            <ul className="space-y-4 mb-10 flex-1 text-zinc-300">
+              {[
+                "৫০০টি ক্রেডিট / প্রতিদিন",
+                "মেডিসিন প্রাইস আপডেট এলার্ট",
+                "বিকোশ/নগদ পেমেন্ট গেটওয়ে সাপোর্ট",
+                "বজবজ (Low Latency) লোকাল সার্ভার",
+                "প্রায়োরিটি ইমেইল সাপোর্ট",
+                "অ্যাডভান্সড ফিল্টারিং API",
+              ].map((feature, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <button className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all shadow-lg shadow-blue-600/20">
+              এখনই কিনুন
+            </button>
+          </div>
+
+          {/* Enterprise Plan */}
+          <div className="p-8 rounded-[2.5rem] bg-zinc-900/40 border border-zinc-800 backdrop-blur-sm flex flex-col">
+            <div className="mb-8">
+              <h3 className="text-lg font-bold text-white mb-2">Business</h3>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold text-white">৳২৪৯৯</span>
+                <span className="text-zinc-500 text-sm">/মাস</span>
+              </div>
+            </div>
+
+            <ul className="space-y-4 mb-10 flex-1 text-zinc-500">
+              {[
+                "আনলিমিটেড ক্রেডিট / প্রতিদিন",
+                "হোয়াটসঅ্যাপ সাপোর্ট সরাসরি",
+                "ফুল ডেটাবেজ এক্সপোর্ট (CSV/JSON)",
+                "ডেডিকেটেড হোস্টিং ইন্টিগ্রেশন",
+                "কাস্টম ব্র্যান্ডিং অপশন",
+                "৯৯.৯% আপটাইম গ্যারান্টি",
+              ].map((feature, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm">
+                  <div className="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <button className="w-full py-4 rounded-2xl border border-zinc-800 hover:bg-zinc-800 text-white font-bold transition-all">
+              যোগাযোগ করুন
+            </button>
           </div>
         </div>
       </section>

@@ -13,6 +13,7 @@ import {
 import UsageChart from "../components/UsageChart";
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 interface Props {
   apiKey: string;
@@ -144,7 +145,9 @@ export default function DashboardUI({ apiKey, credits }: Props) {
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(apiKey);
-                    alert("Copied!");
+                    toast.success("API Key copied to clipboard", {
+                      description: "Keep this key secure and do not share it.",
+                    });
                   }}
                   className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors"
                 >
