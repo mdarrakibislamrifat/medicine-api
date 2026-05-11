@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   },
   description: "Access over 25,000+ authentic pharmaceutical records in Bangladesh. Search by brand name, generic, or company with our lightning-fast Medicine Explorer API.",
   keywords: ["medicine api", "bangladesh pharmaceutical database", "generic medicine search", "napa generic name", "beximco pharma list"],
+  verification: {
+    google: "P25NAo2k7MjY1CcAhHm9ACnlcRDQfdN7WFSSYYg3X0c",
+  },
   authors: [{ name: "Rakib Islam Rifat" }],
   icons: {
     icon: "/favicon.ico", 
