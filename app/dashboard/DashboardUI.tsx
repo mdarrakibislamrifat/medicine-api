@@ -105,7 +105,7 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               </p>
             </div>
 
-            <button
+            {/* <button
               onClick={() => handlePayment(100, 500)}
               className={`w-full mt-8 py-3 rounded-2xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 
                 ${
@@ -118,7 +118,7 @@ export default function DashboardUI({ apiKey, credits }: Props) {
                 className={`w-4 h-4 ${credits === 0 ? "fill-white" : "fill-current"}`}
               />
               {credits === 0 ? "Get More Credits" : "Buy Credits"}
-            </button>
+            </button> */}
           </div>
 
           {/* API Key Card */}
