@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import InteractiveDemo from "./components/InteractiveDemo";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -79,37 +80,7 @@ export default async function Home() {
         </div>
 
         {/* API Preview / Code Mockup */}
-        <div
-          id="docs"
-          className="mt-24 w-full max-w-4xl rounded-3xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden shadow-2xl"
-        >
-          <div className="flex items-center gap-2 px-4 py-3 bg-zinc-900/80 border-b border-zinc-800">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-zinc-700" />
-              <div className="w-3 h-3 rounded-full bg-zinc-700" />
-              <div className="w-3 h-3 rounded-full bg-zinc-700" />
-            </div>
-            <div className="text-xs text-zinc-500 ml-4 font-mono">
-              GET /api/medicines/search?q=Napa
-            </div>
-          </div>
-          <div className="p-6 text-left font-mono text-sm overflow-x-auto">
-            <pre className="text-blue-400">
-              {`{
-  "status": "success",
-  "data": [
-    {
-      "name": "Napa",
-      "generic": "Paracetamol",
-      "company": "Beximco Pharmaceuticals Ltd.",
-      "dosage": "500 mg",
-      "category": "Tablet"
-    }
-  ]
-}`}
-            </pre>
-          </div>
-        </div>
+        <InteractiveDemo/>
       </main>
 
       {/* Stats Section */}
