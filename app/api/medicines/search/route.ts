@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth"; 
 
-
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
@@ -15,15 +14,36 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     let userId: string | null = null;
+    let userCredits: number = 0;
+    let lastReset: Date | null = null;
 
     if (apiKey) {
       const user = await prisma.user.findUnique({
         where: { apiKey: apiKey },
-        select: { id: true, credits: true },
+        select: { id: true, credits: true, lastResetDate: true },
       });
+
       if (!user) return NextResponse.json({ error: "Invalid API Key" }, { status: 403 });
-      if (user.credits < 1) return NextResponse.json({ error: "Insufficient credits" }, { status: 402 });
+      
       userId = user.id;
+      userCredits = user.credits;
+      lastReset = user.lastResetDate;
+
+      // --- DAILY RESET LOGIC START ---
+      const today = new Date();
+      const isDifferentDay = !lastReset || today.toDateString() !== lastReset.toDateString();
+
+      if (isDifferentDay) {
+        userCredits = 10;
+        await prisma.user.update({
+          where: { id: userId },
+          data: { credits: 10, lastResetDate: today }
+        });
+      }
+
+      if (userCredits < 1) {
+        return NextResponse.json({ error: "Insufficient credits for today" }, { status: 402 });
+      }
     } else if (session?.user?.id) {
       userId = session.user.id;
     } else {
@@ -34,8 +54,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Query required" }, { status: 400 });
     }
 
-    const queries: any[] = [
-      prisma.$queryRaw`
+    // Medicine Query
+    const medicineQuery = prisma.$queryRaw`
         SELECT * FROM "Medicine"
         WHERE "name" ILIKE ${`%${query}%`} 
            OR "generic" ILIKE ${`%${query}%`}
@@ -46,8 +66,9 @@ export async function GET(req: NextRequest) {
             ELSE 3 
           END
         LIMIT 10
-      `
-    ];
+      `;
+
+    const queries: any[] = [medicineQuery];
 
     if (apiKey && userId) {
       queries.push(
@@ -73,6 +94,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      remainingCredits: apiKey ? userCredits - 1 : null, 
       data: medicines,
     });
 

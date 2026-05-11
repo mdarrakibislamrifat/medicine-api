@@ -77,14 +77,25 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               <div className="text-6xl font-extrabold tracking-tighter text-white">
                 {credits}
               </div>
+
+            <p className="text-sm text-zinc-500 mt-2 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              Resets to 10 at midnight (UTC)
+            </p>
             </div>
 
-            <button
-              onClick={() => handlePayment(100, 500)}
-              className="w-full mt-8 bg-white text-black hover:bg-zinc-200 py-3 rounded-2xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2"
-            >
-              <Zap className="w-4 h-4 fill-current" /> Buy Credits
-            </button>
+              <button
+                onClick={() => handlePayment(100, 500)}
+                className={`w-full mt-8 py-3 rounded-2xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 
+                ${
+                  credits === 0
+                    ? 'bg-blue-600 hover:bg-blue-500 text-white animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]'
+                    : 'bg-white text-black hover:bg-zinc-200'
+                }`}
+              >
+                <Zap className={`w-4 h-4 ${credits === 0 ? 'fill-white' : 'fill-current'}`} />
+                {credits === 0 ? "Get More Credits" : "Buy Credits"}
+              </button>
           </div>
 
           {/* API Key Card */}
@@ -152,6 +163,9 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               curl -H "x-api-key: {apiKey}"
               "https://medicine-api-nine.vercel.app/api/medicines/search?q=Napa"
             </div>
+            <p className="text-sm text-zinc-400 mt-2">
+              * Free tier users get 10 requests daily. Paid credits never expire.
+            </p>
           </div>
         </div>
 

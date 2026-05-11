@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://medex-medicine-api.vercel.app"),
   title: {
     default: "MediData API | Comprehensive Medicine Database Bangladesh",
     template: "%s | MediData API"
@@ -21,6 +22,11 @@ export const metadata: Metadata = {
   description: "Access over 25,000+ authentic pharmaceutical records in Bangladesh. Search by brand name, generic, or company with our lightning-fast Medicine Explorer API.",
   keywords: ["medicine api", "bangladesh pharmaceutical database", "generic medicine search", "napa generic name", "beximco pharma list"],
   authors: [{ name: "Rakib Islam Rifat" }],
+  icons: {
+    icon: "/icon.png", 
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
   openGraph: {
     title: "MediData API - 25k+ Pharmaceutical Records",
     description: "The most comprehensive and reliable medicine database API for developers and healthcare professionals.",
