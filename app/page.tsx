@@ -16,7 +16,7 @@ export default async function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto relative z-10">
+      <nav className="flex items-center justify-between px-6 py-6 max-w-7xl mx-auto relative z-10 w-full">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-emerald-400 rounded-lg flex items-center justify-center font-bold text-black">
             M
@@ -25,6 +25,8 @@ export default async function Home() {
             MedEx <span className="text-blue-500">API</span>
           </span>
         </div>
+
+        {/* Desktop Links - Agei chhilo */}
         <div className="hidden md:flex items-center gap-8 text-sm text-zinc-400">
           <Link href="#features" className="hover:text-white transition-colors">
             Features
@@ -32,14 +34,15 @@ export default async function Home() {
           <Link href="#docs" className="hover:text-white transition-colors">
             Documentation
           </Link>
-          <Link href="#pricing" className="hover:text-white transition-colors">
-            Pricing
-          </Link>
+          {/* <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link> */}
+        </div>
+
+        <div className="flex items-center gap-3">
           <Link
             href={session ? "/dashboard" : "/login"}
-            className="px-5 py-2 bg-white text-black rounded-full font-medium hover:bg-zinc-200 transition-all"
+            className="px-4 py-2 md:px-5 md:py-2 bg-white text-black rounded-full text-xs md:text-sm font-medium hover:bg-zinc-200 transition-all"
           >
-            {session ? "Go to Dashboard" : "Get API Key"}
+            {session ? "Go To Dashboard" : "Get API Key"}
           </Link>
         </div>
       </nav>
@@ -81,10 +84,8 @@ export default async function Home() {
 
         {/* API Preview / Code Mockup */}
         <div id="docs">
-          <InteractiveDemo/>
+          <InteractiveDemo />
         </div>
-
-
       </main>
 
       {/* Stats Section */}
@@ -155,9 +156,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-    
-      
     </div>
   );
 }

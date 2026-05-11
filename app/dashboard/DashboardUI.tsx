@@ -53,85 +53,93 @@ export default function DashboardUI({ apiKey, credits }: Props) {
     <div className="min-h-screen bg-[#050505] text-white p-8">
       <div className="max-w-5xl mx-auto">
         {/* Header Section */}
-        <div className="flex justify-between items-center mb-12">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8 md:mb-12">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               Developer Dashboard
             </h1>
-            <p className="text-zinc-500 mt-1">
+            <p className="text-zinc-500 mt-1 text-sm md:text-base">
               Manage your medicine API access and credits
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <Link
               href="/"
-              className="flex items-center gap-2 text-zinc-400 hover:text-white px-4 py-2 rounded-xl border border-transparent hover:border-zinc-800 transition-all text-sm font-medium"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 text-zinc-400 hover:text-white px-3 py-2 rounded-xl border border-zinc-800 transition-all text-xs md:text-sm font-medium"
             >
-              <Home className="w-4 h-4" /> Home Page
+              <Home className="w-4 h-4" />{" "}
+              <span className="whitespace-nowrap">Home Page</span>
             </Link>
 
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 px-4 py-2 rounded-xl border border-zinc-800 transition-all text-sm font-medium"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 px-3 py-2 rounded-xl border border-zinc-800 transition-all text-xs md:text-sm font-medium"
             >
               <LogOut className="w-4 h-4" /> Logout
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
           {/* Credits Card */}
-          <div className="relative overflow-hidden bg-zinc-900/50 border border-zinc-800 p-6 rounded-3xl backdrop-blur-xl flex flex-col justify-between group">
+          <div className="relative overflow-hidden bg-zinc-900/50 border border-zinc-800 p-5 md:p-6 rounded-3xl backdrop-blur-xl flex flex-col justify-between group">
             {/* Background Glow */}
             <div className="absolute -right-10 -top-10 w-32 h-32 bg-blue-600/10 blur-[50px] group-hover:bg-blue-600/20 transition-all" />
 
             <div>
               <div className="flex items-center gap-3 mb-4 text-blue-400">
                 <div className="p-2 bg-blue-500/10 rounded-lg">
-                  <CreditCard className="w-5 h-5" />
+                  <CreditCard className="w-4 h-4 md:w-5 md:h-5" />
                 </div>
-                <span className="font-medium text-sm text-zinc-400">
+                <span className="font-medium text-xs md:text-sm text-zinc-400">
                   Available Credits
                 </span>
               </div>
-              <div className="text-6xl font-extrabold tracking-tighter text-white">
+              {/* Mobile-e text-5xl ar desktop-e text-6xl kora hoyeche */}
+              <div className="text-5xl md:text-6xl font-extrabold tracking-tighter text-white">
                 {credits}
               </div>
 
-              <p className="text-sm text-zinc-500 mt-2 flex items-center gap-1">
+              <p className="text-[11px] md:text-sm text-zinc-500 mt-2 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                 Resets to 10 at midnight (UTC)
               </p>
             </div>
 
-            {/* <button
+            {/* Buy Credits Button - Jodi show korte chao */}
+            <button
               onClick={() => handlePayment(100, 500)}
-              className={`w-full mt-8 py-3 rounded-2xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 
-                ${
-                  credits === 0
-                    ? "bg-blue-600 hover:bg-blue-500 text-white animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-                    : "bg-white text-black hover:bg-zinc-200"
-                }`}
+              className={`w-full mt-6 md:mt-8 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 
+        ${
+          credits === 0
+            ? "bg-blue-600 hover:bg-blue-500 text-white animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]"
+            : "bg-white text-black hover:bg-zinc-200"
+        }`}
             >
               <Zap
-                className={`w-4 h-4 ${credits === 0 ? "fill-white" : "fill-current"}`}
+                className={`w-3.5 h-3.5 ${credits === 0 ? "fill-white" : "fill-current"}`}
               />
               {credits === 0 ? "Get More Credits" : "Buy Credits"}
-            </button> */}
+            </button>
           </div>
 
           {/* API Key Card */}
-          <div className="md:col-span-2 bg-zinc-900/50 border border-zinc-800 p-6 rounded-3xl backdrop-blur-xl">
+          <div className="md:col-span-2 bg-zinc-900/50 border border-zinc-800 p-5 md:p-6 rounded-3xl backdrop-blur-xl">
             <div className="flex items-center gap-3 mb-4 text-blue-400">
-              <Key className="w-5 h-5" />
-              <span className="font-medium text-sm">Your Secret API Key</span>
+              <Key className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="font-medium text-xs md:text-sm">
+                Your Secret API Key
+              </span>
             </div>
-            <div className="flex items-center gap-4 bg-zinc-950 border border-zinc-800 p-4 rounded-2xl group">
-              <code className="text-zinc-300 font-mono text-sm flex-1 truncate">
-                {showKey ? apiKey : "•".repeat(20)}
+
+            {/* Key Display Area */}
+            <div className="flex items-center gap-2 md:gap-4 bg-zinc-950 border border-zinc-800 p-3 md:p-4 rounded-2xl group">
+              <code className="text-zinc-300 font-mono text-xs md:text-sm flex-1 truncate pr-2">
+                {showKey ? apiKey : "•".repeat(12)}{" "}
+                {/* Repeat komano hoyeche jate overflow na hoy */}
               </code>
-              <div className="flex gap-2">
+              <div className="flex gap-1 md:gap-2">
                 <button
                   onClick={() => setShowKey(!showKey)}
                   className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors"
@@ -139,15 +147,13 @@ export default function DashboardUI({ apiKey, credits }: Props) {
                   {showKey ? (
                     <EyeOff className="w-4 h-4" />
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <Key className="w-4 h-4" />
                   )}
                 </button>
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(apiKey);
-                    toast.success("API Key copied to clipboard", {
-                      description: "Keep this key secure and do not share it.",
-                    });
+                    toast.success("Copied!");
                   }}
                   className="p-2 hover:bg-zinc-900 rounded-lg text-zinc-500 hover:text-white transition-colors"
                 >
@@ -155,15 +161,17 @@ export default function DashboardUI({ apiKey, credits }: Props) {
                 </button>
               </div>
             </div>
-            <div className="mt-6 space-y-2">
-              <p className="text-zinc-400 text-sm italic">
+
+            {/* Footer Info */}
+            <div className="mt-5 md:mt-6 space-y-3">
+              <p className="text-zinc-500 text-[11px] md:text-sm italic leading-relaxed">
                 "Keep this key private. Do not share it in client-side code."
               </p>
-              <div className="flex gap-2">
-                <span className="px-2 py-1 bg-zinc-800 rounded text-[10px] text-zinc-500 uppercase">
+              <div className="flex flex-wrap gap-2">
+                <span className="px-2 py-1 bg-zinc-800/50 border border-zinc-700/50 rounded text-[9px] md:text-[10px] text-zinc-400 uppercase tracking-wider">
                   Production Ready
                 </span>
-                <span className="px-2 py-1 bg-zinc-800 rounded text-[10px] text-zinc-500 uppercase">
+                <span className="px-2 py-1 bg-zinc-800/50 border border-zinc-700/50 rounded text-[9px] md:text-[10px] text-zinc-400 uppercase tracking-wider">
                   HTTPS Only
                 </span>
               </div>
@@ -171,7 +179,7 @@ export default function DashboardUI({ apiKey, credits }: Props) {
           </div>
         </div>
 
-        <div className=" mb-8">
+        <div className="mb-8 w-full overflow-hidden">
           <UsageChart />
         </div>
 

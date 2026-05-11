@@ -33,16 +33,19 @@ export default function InteractiveDemo() {
   const displayData = mockData[query] || mockData["Napa One"];
 
   return (
-    <div className="mt-24 w-full max-w-5xl rounded-3xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden shadow-2xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-6 py-4 bg-zinc-900/80 border-b border-zinc-800">
-        <div className="flex items-center gap-4">
-          <div className="flex gap-1.5">
+    // mt-24 ke mobile-e komanor jonno mt-10 md:mt-24 use kora hoyeche
+    <div className="mt-10 md:mt-24 w-full max-w-5xl rounded-2xl md:rounded-3xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-md overflow-hidden shadow-2xl mx-auto">
+      
+      {/* Header - Mobile friendly padding and layout */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4 md:px-6 bg-zinc-900/80 border-b border-zinc-800">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+          <div className="hidden sm:flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-red-500/50" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
             <div className="w-3 h-3 rounded-full bg-green-500/50" />
           </div>
-          <code className="text-xs text-blue-400 font-mono bg-blue-500/10 px-2 py-1 rounded">
+          {/* API endpoint text wrap korar jonno break-all use kora hoyeche */}
+          <code className="text-[10px] md:text-xs text-blue-400 font-mono bg-blue-500/10 px-2 py-1 rounded break-all">
             GET /api/medicines/search?q={query}
           </code>
         </div>
@@ -59,9 +62,10 @@ export default function InteractiveDemo() {
         </div>
       </div>
 
-      {/* API Response Display */}
-      <div className="p-6 text-left font-mono text-sm overflow-x-auto max-h-[450px] scrollbar-thin scrollbar-thumb-zinc-800">
-        <pre className="text-emerald-400">
+      {/* API Response Display - Mobile-friendly scrolling */}
+      <div className="p-4 md:p-6 text-left font-mono text-xs md:text-sm overflow-x-auto max-h-[400px] md:max-h-[450px] scrollbar-thin scrollbar-thumb-zinc-800">
+        {/* whitespace-pre-wrap use korle JSON mobile screen er baire jabe na */}
+        <pre className="text-emerald-400 whitespace-pre-wrap break-words">
           {JSON.stringify({
             success: true,
             remainingCredits: 9,
