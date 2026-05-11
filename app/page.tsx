@@ -80,7 +80,11 @@ export default async function Home() {
         </div>
 
         {/* API Preview / Code Mockup */}
-        <InteractiveDemo/>
+        <div id="docs">
+          <InteractiveDemo/>
+        </div>
+
+
       </main>
 
       {/* Stats Section */}

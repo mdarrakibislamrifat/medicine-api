@@ -42,7 +42,11 @@ export async function POST(req: Request) {
       }
     });
 
-    const response = await fetch("https://sandbox.sslcommerz.com/gwprocess/v4/api.php", {
+    const gatewayUrl = process.env.NODE_ENV === 'production' 
+  ? "https://securepay.sslcommerz.com/gwprocess/v4/api.php" 
+  : "https://sandbox.sslcommerz.com/gwprocess/v4/api.php";
+
+    const response = await fetch(gatewayUrl, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(data).toString(),
