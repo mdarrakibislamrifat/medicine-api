@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   keywords: ["medicine api", "bangladesh pharmaceutical database", "generic medicine search", "napa generic name", "beximco pharma list"],
   authors: [{ name: "Rakib Islam Rifat" }],
   icons: {
-    icon: "/icon.png", 
-    shortcut: "/icon.png",
-    apple: "/icon.png",
+    icon: "/favicon.ico", 
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   openGraph: {
     title: "MediData API - 25k+ Pharmaceutical Records",
