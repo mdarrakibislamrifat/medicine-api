@@ -22,7 +22,7 @@ export default async function Home() {
             M
           </div>
           <span className="text-xl font-bold tracking-tight">
-            MedEx <span className="text-blue-500">API</span>
+            Medicine <span className="text-blue-500">API</span>
           </span>
         </div>
 
