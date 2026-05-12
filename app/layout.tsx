@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://medex-medicine-api.vercel.app"),
+  metadataBase: new URL("https://medicine-api-rifat.vercel.app"),
   title: {
     default: "MediData API | Comprehensive Medicine Database Bangladesh",
     template: "%s | MediData API"
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MediData API - 25k+ Pharmaceutical Records",
     description: "The most comprehensive and reliable medicine database API for developers and healthcare professionals.",
-    url: "https://medex-medicine-api.vercel.app/", 
+    url: "https://medicine-api-rifat.vercel.app", 
     siteName: "MediData API",
     images: [
       {
