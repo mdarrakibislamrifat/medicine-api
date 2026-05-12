@@ -108,7 +108,7 @@ export default function DashboardUI({ apiKey, credits }: Props) {
             </div>
 
             {/* Buy Credits Button - Jodi show korte chao */}
-            <button
+            {/* <button
               onClick={() => handlePayment(100, 500)}
               className={`w-full mt-6 md:mt-8 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 
         ${
@@ -121,7 +121,7 @@ export default function DashboardUI({ apiKey, credits }: Props) {
                 className={`w-3.5 h-3.5 ${credits === 0 ? "fill-white" : "fill-current"}`}
               />
               {credits === 0 ? "Get More Credits" : "Buy Credits"}
-            </button>
+            </button> */}
           </div>
 
           {/* API Key Card */}
@@ -194,7 +194,7 @@ export default function DashboardUI({ apiKey, credits }: Props) {
             </p>
             <div className="bg-black p-4 rounded-xl border border-zinc-800 overflow-x-auto text-blue-400">
               curl -H "x-api-key: {apiKey}"
-              "https://medicine-api-nine.vercel.app/api/medicines/search?q=Napa"
+              "https://medicine-api-rifat.vercel.app/api/medicines/search?q=Napa"
             </div>
             <p className="text-sm text-zinc-400 mt-2">
               * Free tier users get 10 requests daily. Paid credits never
