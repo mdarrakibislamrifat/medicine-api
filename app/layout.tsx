@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "./provider";
 import { Toaster } from "sonner";
 import DeveloperBadge from "./components/DeveloperBadge";
+import { LanguageProvider } from "./context/LanguageContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -67,9 +68,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
+          <LanguageProvider>
+
           <DeveloperBadge/>
           {children}
           <Toaster richColors position="top-right" />
+          </LanguageProvider>
         </AuthProvider>
         
       </body>
