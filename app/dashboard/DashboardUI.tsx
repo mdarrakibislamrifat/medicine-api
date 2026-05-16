@@ -9,9 +9,10 @@ import {
   EyeOff,
   Eye,
   Home,
+  Loader2,
 } from "lucide-react";
 import UsageChart from "../components/UsageChart";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 
@@ -23,6 +24,30 @@ interface Props {
 export default function DashboardUI({ apiKey, credits }: Props) {
   const { data: session } = useSession();
   const [showKey, setShowKey] = useState(false);
+  
+  // Real-time chart status handling elements
+  const [chartData, setChartData] = useState([]);
+  const [chartLoading, setChartLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsageAnalytics = async () => {
+      try {
+        const res = await fetch("/api/analytics/usage");
+        const json = await res.json();
+        if (json.success) {
+          setChartData(json.data);
+        }
+      } catch (err) {
+        console.error("Failed loading chart stats data framework", err);
+      } finally {
+        setChartLoading(false);
+      }
+    };
+
+    if (session) {
+      fetchUsageAnalytics();
+    }
+  }, [session]);
 
   const handlePayment = async (amount: number, creditToBuy: number) => {
     try {
@@ -84,7 +109,6 @@ export default function DashboardUI({ apiKey, credits }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
           {/* Credits Card */}
           <div className="relative overflow-hidden bg-zinc-900/50 border border-zinc-800 p-5 md:p-6 rounded-3xl backdrop-blur-xl flex flex-col justify-between group">
-            {/* Background Glow */}
             <div className="absolute -right-10 -top-10 w-32 h-32 bg-blue-600/10 blur-[50px] group-hover:bg-blue-600/20 transition-all" />
 
             <div>
@@ -96,7 +120,6 @@ export default function DashboardUI({ apiKey, credits }: Props) {
                   Available Credits
                 </span>
               </div>
-              {/* Mobile-e text-5xl ar desktop-e text-6xl kora hoyeche */}
               <div className="text-5xl md:text-6xl font-extrabold tracking-tighter text-white">
                 {credits}
               </div>
@@ -106,22 +129,6 @@ export default function DashboardUI({ apiKey, credits }: Props) {
                 Resets to 10 at midnight (UTC)
               </p>
             </div>
-
-            {/* Buy Credits Button - Jodi show korte chao */}
-            {/* <button
-              onClick={() => handlePayment(100, 500)}
-              className={`w-full mt-6 md:mt-8 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 
-        ${
-          credits === 0
-            ? "bg-blue-600 hover:bg-blue-500 text-white animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-            : "bg-white text-black hover:bg-zinc-200"
-        }`}
-            >
-              <Zap
-                className={`w-3.5 h-3.5 ${credits === 0 ? "fill-white" : "fill-current"}`}
-              />
-              {credits === 0 ? "Get More Credits" : "Buy Credits"}
-            </button> */}
           </div>
 
           {/* API Key Card */}
@@ -133,11 +140,9 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               </span>
             </div>
 
-            {/* Key Display Area */}
             <div className="flex items-center gap-2 md:gap-4 bg-zinc-950 border border-zinc-800 p-3 md:p-4 rounded-2xl group">
               <code className="text-zinc-300 font-mono text-xs md:text-sm flex-1 truncate pr-2">
                 {showKey ? apiKey : "•".repeat(12)}{" "}
-                {/* Repeat komano hoyeche jate overflow na hoy */}
               </code>
               <div className="flex gap-1 md:gap-2">
                 <button
@@ -162,7 +167,6 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               </div>
             </div>
 
-            {/* Footer Info */}
             <div className="mt-5 md:mt-6 space-y-3">
               <p className="text-zinc-500 text-[11px] md:text-sm italic leading-relaxed">
                 "Keep this key private. Do not share it in client-side code."
@@ -179,8 +183,19 @@ export default function DashboardUI({ apiKey, credits }: Props) {
           </div>
         </div>
 
-        <div className="mb-8 w-full overflow-hidden">
-          <UsageChart />
+        {/* Dynamic UsageChart Integration Wrapper Section */}
+        <div className="mb-8 w-full overflow-hidden bg-zinc-900/10 border border-zinc-800/40 p-4 rounded-3xl min-h-[300px] flex items-center justify-center relative">
+          {chartLoading ? (
+            <div className="flex flex-col items-center gap-2 text-zinc-500 text-sm font-mono">
+              <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+              Loading real-time API logs...
+            </div>
+          ) : (
+            <div className="w-full">
+              {/* @ts-ignore --- Passing real database analytics objects directly */}
+              <UsageChart data={chartData} />
+            </div>
+          )}
         </div>
 
         {/* Quick Start Guide */}
@@ -197,8 +212,7 @@ export default function DashboardUI({ apiKey, credits }: Props) {
               "https://medicine-api-rifat.vercel.app/api/medicines/search?q=Napa"
             </div>
             <p className="text-sm text-zinc-400 mt-2">
-              * Free tier users get 10 requests daily. Paid credits never
-              expire.
+              * Free tier users get 10 requests daily. Paid credits never expire.
             </p>
           </div>
         </div>
