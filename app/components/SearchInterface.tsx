@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Search, Loader2, Database, Lock, ArrowRight } from 'lucide-react'; 
+import { Search, Loader2, Database, Lock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'; 
 import { useSession } from "next-auth/react";
 import Link from 'next/link';
 
@@ -9,6 +9,21 @@ export default function SearchInterface() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  
+  // New Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationInfo, setPaginationInfo] = useState({
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+    totalRecords: 0
+  });
+
+  // Reset page when user types a new search term
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    setCurrentPage(1); 
+  };
 
   useEffect(() => {
     if (!session) return;
@@ -17,10 +32,16 @@ export default function SearchInterface() {
       if (query.length > 2) {
         setLoading(true);
         try {
-          const res = await fetch(`/api/medicines/search?q=${query}`);
+          const res = await fetch(`/api/medicines/search?q=${query}&page=${currentPage}`);
           const json = await res.json();
           if (json.success) {
             setResults(json.data);
+            setPaginationInfo({
+              totalPages: json.pagination.totalPages,
+              hasNextPage: json.pagination.hasNextPage,
+              hasPrevPage: json.pagination.hasPrevPage,
+              totalRecords: json.pagination.totalRecords
+            });
           }
         } catch (error) {
           console.error("Search error", error);
@@ -29,11 +50,12 @@ export default function SearchInterface() {
         }
       } else {
         setResults([]);
+        setPaginationInfo({ totalPages: 1, hasNextPage: false, hasPrevPage: false, totalRecords: 0 });
       }
     }, 400); 
 
     return () => clearTimeout(delayDebounceFn);
-  }, [query, session]);
+  }, [query, currentPage, session]); 
 
   if (status === "loading") {
     return (
@@ -79,7 +101,7 @@ export default function SearchInterface() {
       </div>
 
       {/* Search Bar */}
-      <div className={`relative max-w-3xl mx-auto mb-16 group transition-all ${!session ? 'opacity-30' : ''}`}>
+      <div className={`relative max-w-3xl mx-auto mb-12 group transition-all ${!session ? 'opacity-30' : ''}`}>
         <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-emerald-500 rounded-2xl blur opacity-20 group-focus-within:opacity-40 transition duration-1000"></div>
         <div className="relative flex items-center">
           <div className="absolute left-5 text-zinc-500">
@@ -88,31 +110,65 @@ export default function SearchInterface() {
           <input 
             type="text"
             disabled={!session}
+            value={query}
             placeholder="Type brand name (e.g. Napa, Seclo)..."
             className="w-full pl-14 pr-6 py-5 rounded-xl bg-zinc-900 border border-zinc-800 text-white outline-none focus:border-zinc-700 transition-all placeholder:text-zinc-600"
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={handleInputChange}
           />
         </div>
       </div>
 
+      {/* Total Result Counter Indicator */}
+      {results.length > 0 && session && (
+        <div className="max-w-6xl mx-auto mb-4 flex justify-end text-xs text-zinc-300 font-mono">
+          Total Found: {paginationInfo.totalRecords} medicines
+        </div>
+      )}
+
       {/* Results Section */}
       <div className={!session ? 'blur-md pointer-events-none' : ''}>
         {results.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.map((med: any) => (
-              <div key={med.id} className="group p-6 rounded-[2rem] bg-zinc-900/40 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/60 transition-all duration-300">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-bold text-white">{med.name}</h3>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {results.map((med: any) => (
+                <div key={med.id} className="group p-6 rounded-[2rem] bg-zinc-900/40 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/60 transition-all duration-300">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-xl font-bold text-white">{med.name}</h3>
+                  </div>
+                  <p className="text-sm font-medium text-blue-400 mb-4 px-2 py-0.5 rounded-md bg-blue-500/5 border border-blue-500/10 inline-block">
+                    {med.generic}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-zinc-500 mt-2">
+                    <span className="truncate">{med.company}</span>
+                  </div>
                 </div>
-                <p className="text-sm font-medium text-blue-400 mb-4 px-2 py-0.5 rounded-md bg-blue-500/5 border border-blue-500/10 inline-block">
-                  {med.generic}
-                </p>
-                <div className="flex items-center gap-2 text-xs text-zinc-500 mt-2">
-                  <span className="truncate">{med.company}</span>
-                </div>
+              ))}
+            </div>
+
+            {paginationInfo.totalPages > 1 && (
+              <div className="flex items-center justify-center gap-6 pt-4 mb-16 border-t border-zinc-900">
+                <button
+                  disabled={!paginationInfo.hasPrevPage || loading}
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  className="flex items-center justify-center p-3 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:bg-zinc-900 disabled:hover:text-zinc-400 transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                
+                <span className="text-sm text-zinc-400 font-medium">
+                  Page <span className="text-white font-semibold">{currentPage}</span> of <span className="text-white font-semibold">{paginationInfo.totalPages}</span>
+                </span>
+
+                <button
+                  disabled={!paginationInfo.hasNextPage || loading}
+                  onClick={() => setCurrentPage(prev => prev + 1)}
+                  className="flex items-center justify-center p-3 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:bg-zinc-900 disabled:hover:text-zinc-400 transition-all"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         ) : query.length > 2 && !loading ? (
           <div className="text-center py-20 bg-zinc-900/20 rounded-[3rem] border border-dashed border-zinc-800">
              <p className="text-zinc-500 font-medium italic">No matches for "{query}"</p>

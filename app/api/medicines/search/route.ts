@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth"; 
 import { prisma } from "@/lib/prisma";
-
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q")?.trim();
     
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+    const limit = 6; 
+    const offset = (page - 1) * limit;
+
     const apiKey = req.headers.get("x-api-key");
     const session = await getServerSession(authOptions);
 
@@ -29,7 +31,7 @@ export async function GET(req: NextRequest) {
       userCredits = user.credits;
       lastReset = user.lastResetDate;
 
-      // --- DAILY RESET LOGIC START ---
+      // --- DAILY RESET LOGIC ---
       const today = new Date();
       const isDifferentDay = !lastReset || today.toDateString() !== lastReset.toDateString();
 
@@ -54,22 +56,41 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Query required" }, { status: 400 });
     }
 
-    // Medicine Query
+    const searchQuery = `%${query}%`;
+    const prefixQuery = `${query}%`;
+
     const medicineQuery = prisma.$queryRaw`
-        SELECT * FROM "Medicine"
-        WHERE "name" ILIKE ${`%${query}%`} 
-           OR "generic" ILIKE ${`%${query}%`}
-        ORDER BY 
-          CASE 
-            WHEN "name" ILIKE ${`${query}%`} THEN 1
-            WHEN "name" ILIKE ${`%${query}%`} THEN 2
-            ELSE 3 
-          END
-        LIMIT 10
-      `;
+      SELECT *, 
+            similarity("name", ${query}) as name_score,
+            similarity("generic", ${query}) as generic_score
+      FROM "Medicine"
+      WHERE "name" ILIKE ${searchQuery} 
+        OR "generic" ILIKE ${searchQuery}
+        OR "company" ILIKE ${searchQuery}
+        OR similarity("name", ${query}) > 0.3
+        OR similarity("generic", ${query}) > 0.3
+      ORDER BY 
+        CASE 
+          WHEN "name" ILIKE ${prefixQuery} THEN 1
+          WHEN "name" ILIKE ${searchQuery} THEN 2
+          ELSE 3 
+        END,
+        similarity("name", ${query}) DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `;
 
-    const queries: any[] = [medicineQuery];
+    const countQuery = prisma.$queryRaw<{ count: BigInt }[]>`
+      SELECT COUNT(*)::bigint as count FROM "Medicine"
+      WHERE "name" ILIKE ${searchQuery} 
+        OR "generic" ILIKE ${searchQuery}
+        OR "company" ILIKE ${searchQuery}
+        OR similarity("name", ${query}) > 0.3
+        OR similarity("generic", ${query}) > 0.3
+    `;
 
+    const queries: any[] = [medicineQuery, countQuery];
+
+    // Conditional API updates
     if (apiKey && userId) {
       queries.push(
         prisma.user.update({
@@ -90,10 +111,21 @@ export async function GET(req: NextRequest) {
     }
 
     const results = await prisma.$transaction(queries);
-    const medicines = results[0];
+    const medicines = results[0] as any[];
+    
+    const totalRecords = Number(results[1][0]?.count || 0); 
+    const totalPages = Math.ceil(totalRecords / limit);
 
     return NextResponse.json({
       success: true,
+      pagination: {
+        page,
+        limit,
+        totalRecords,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      },
       remainingCredits: apiKey ? userCredits - 1 : null, 
       data: medicines,
     });
